@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.javarush</groupId>
-    <artifactId>zentools</artifactId>
+    <artifactId>my_activities</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>zentools</name>
+    <name>my_activities</name>
     <description>Demo project for Spring Boot</description>
 
     <properties>

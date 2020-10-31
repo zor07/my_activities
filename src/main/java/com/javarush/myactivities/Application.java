@@ -1,13 +1,13 @@
-package com.javarush.zentools;
+package com.javarush.myactivities;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ZentoolsApplication {
+public class Application {
 
     public static void main(String[] args) {
-        SpringApplication.run(ZentoolsApplication.class, args);
+        SpringApplication.run(Application.class, args);
     }
 
 }

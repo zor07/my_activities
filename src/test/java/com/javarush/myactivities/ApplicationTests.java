@@ -1,10 +1,10 @@
-package com.javarush.zentools;
+package com.javarush.myactivities;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ZentoolsApplicationTests {
+class ApplicationTests {
 
     @Test
     void contextLoads() {
