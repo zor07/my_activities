@@ -1,4 +1,7 @@
 package com.javarush.myactivities.repositories.interfaces;
 
-public interface ProjectRepository {
+import com.javarush.myactivities.entities.Project;
+
+
+public interface ProjectRepository extends CrudRepository<Project, Long> {
 }

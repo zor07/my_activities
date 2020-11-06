@@ -4,10 +4,12 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Builder @Getter
-public class Project {
+public class Activity {
 
-    private Long id;
+    private Integer id;
     private String name;
     private String description;
+    private Project project;
 
 }
+
