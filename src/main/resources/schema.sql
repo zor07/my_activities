@@ -10,7 +10,7 @@ create table activity (
     id serial primary key,
     name varchar(100) not null,
     description varchar(250),
-    project_id int not null
+    project_id int
         constraint activity_project_id_fk
         references project
 );

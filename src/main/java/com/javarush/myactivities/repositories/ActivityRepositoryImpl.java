@@ -13,12 +13,15 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public class ActivityRepositoryImpl implements ActivityRepository {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ActivityRepositoryImpl.class);
@@ -26,17 +29,15 @@ public class ActivityRepositoryImpl implements ActivityRepository {
     private final JdbcTemplate jdbc;
 
     private final RowMapper<Activity> activityRowMapper = (rs, rowNum) -> Activity.builder()
-            .id(rs.getLong("a.id"))
-            .name(rs.getString("a.name"))
-            .description(rs.getString("a.description"))
+            .id(rs.getLong("activity.id"))
+            .name(rs.getString("activity.name"))
+            .description(rs.getString("activity.description"))
             .project(Project.builder()
-                    .id(rs.getLong("p.id"))
-                    .name(rs.getString("p.name"))
-                    .description(rs.getString("p.description"))
+                    .id(rs.getLong("project.id"))
+                    .name(rs.getString("project.name"))
+                    .description(rs.getString("project.description"))
                     .build())
             .build();
-
-
 
     @Autowired
     public ActivityRepositoryImpl(@Qualifier("jdbc") JdbcTemplate jdbc) {
@@ -46,17 +47,17 @@ public class ActivityRepositoryImpl implements ActivityRepository {
     @Override
     public List<Activity> getAll() {
         @Language("MySQL")
-        final String query = "select * from activity a\n" +
-                "join project p on a.project_id = p.id;";
+        final String query = "select * from activity \n" +
+                "left join project on activity.project_id = project.id;";
         return jdbc.query(query, activityRowMapper);
     }
 
     @Override
     public Activity getById(Long id) {
         @Language("MySQL")
-        final String query = "select * from activity a\n" +
-                "join project p on a.project_id = p.id\n" +
-                "where a.id=?";
+        final String query = "select * from activity\n" +
+                "left join project on activity.project_id = project.id \n" +
+                "where activity.id=?";
         try {
             return jdbc.queryForObject(query, new Object[]{id}, activityRowMapper);
         } catch (EmptyResultDataAccessException e) {
@@ -80,10 +81,19 @@ public class ActivityRepositoryImpl implements ActivityRepository {
         final KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbc.update(con -> {
-            PreparedStatement ps = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            final PreparedStatement ps = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            final Long projectId = Optional.ofNullable(activity.getProject())
+                    .map(Project::getId)
+                    .orElse(null);
+
             ps.setString(1, activity.getName());
             ps.setString(2, activity.getDescription());
-            ps.setLong(3, activity.getProject().getId());
+
+            if (projectId == null) {
+                ps.setNull(3, Types.BIGINT);
+            } else {
+                ps.setLong(3, projectId);
+            }
             return ps;
         }, keyHolder);
 
@@ -101,7 +111,14 @@ public class ActivityRepositoryImpl implements ActivityRepository {
                 "    project_id=?\n" +
                 "where id=?;";
 
-        jdbc.update(query, activity.getName(),
-                activity.getDescription(), activity.getProject().getId());
+        final Long project_id =  Optional.ofNullable(activity.getProject())
+                .map(Project::getId)
+                .orElse(null);
+
+        jdbc.update(query,
+                activity.getName(),
+                activity.getDescription(),
+                project_id,
+                activity.getId());
     }
 }

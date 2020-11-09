@@ -9,10 +9,10 @@ create table project (
 );
 
 create table activity (
-      id int primary key,
+      id int primary key auto_increment,
       name varchar(100) not null,
       description varchar(250),
-      project_id int not null
+      project_id int
           constraint activity_project_id_fk
           references project
 );
