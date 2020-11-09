@@ -99,8 +99,9 @@ public class EntryRepositoryImpl implements EntryRepository {
             return ps;
         }, keyHolder);
 
-        return Optional.ofNullable(keyHolder.getKey())
-                .map(Number::longValue)
+        return Optional.ofNullable(keyHolder.getKeys())
+                .map(keys -> (Integer) keys.get("ID"))
+                .map(Integer::longValue)
                 .orElse(null);
     }
 
