@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @Getter
 public class Entry {
 
-    private Integer id;
+    private Long id;
     private String comment;
     private LocalDate date;
     private Activity activity;
