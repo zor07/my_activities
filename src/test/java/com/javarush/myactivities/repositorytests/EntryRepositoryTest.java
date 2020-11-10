@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -24,13 +26,13 @@ public class EntryRepositoryTest extends BasicRepositoryTest {
     @Test
     @Override
     public void createTest() {
-        assertEquals(0, entryRepository.getAll().size());
-        entryRepository.create(Entry.builder()
+        assertFalse(entryRepository.findAll().iterator().hasNext());
+        entryRepository.save(Entry.builder()
                 .activity(createActivity())
                 .date(LocalDate.now())
                 .comment("Entry comment")
                 .build());
-        assertEquals(1, entryRepository.getAll().size());
+        assertTrue(entryRepository.findAll().iterator().hasNext());
     }
 
 
@@ -44,9 +46,9 @@ public class EntryRepositoryTest extends BasicRepositoryTest {
                 .comment("Entry comment")
                 .build();
 
-        final Long key = entryRepository.create(entryToSave);
+        final Long key = entryRepository.save(entryToSave).getId();
 
-        final Entry entry = entryRepository.getById(key);
+        final Entry entry = entryRepository.findById(key).orElse(new Entry());
         assertEquals(key, entry.getId());
         assertEquals(LocalDate.now(), entry.getDate());
         assertEquals("Entry comment", entry.getComment());
@@ -64,7 +66,7 @@ public class EntryRepositoryTest extends BasicRepositoryTest {
                 .date(LocalDate.now())
                 .comment("Entry comment")
                 .build();
-        final Long key = entryRepository.create(entry);
+        final Long key = entryRepository.save(entry).getId();
 
         //update
         final Activity newActivity = createActivity();
@@ -77,10 +79,10 @@ public class EntryRepositoryTest extends BasicRepositoryTest {
                 .comment(newEntryComment)
                 .build();
 
-        entryRepository.update(newEntry);
+        entryRepository.save(newEntry);
 
         // read and assert update was done
-        final Entry fromDb = entryRepository.getById(key);
+        final Entry fromDb = entryRepository.findById(key).orElse(new Entry());
         assertEquals(key, fromDb.getId());
         assertEquals(newDate, fromDb.getDate());
         assertEquals(newEntryComment, fromDb.getComment());
@@ -98,9 +100,9 @@ public class EntryRepositoryTest extends BasicRepositoryTest {
                 .comment("Entry comment")
                 .build();
 
-        final Long key = entryRepository.create(entry);
-        entryRepository.delete(key);
-        assertNull(entryRepository.getById(key));
+        final Long key = entryRepository.save(entry).getId();
+        entryRepository.deleteById(key);
+        assertNull(entryRepository.findById(key).orElse(null));
     }
 
 
@@ -110,8 +112,6 @@ public class EntryRepositoryTest extends BasicRepositoryTest {
                 .description("descr")
                 .build();
 
-        final Long id = activityRepository.create(activity);
-        activity.setId(id);
-        return activity;
+        return activityRepository.save(activity);
     }
 }

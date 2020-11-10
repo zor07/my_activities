@@ -7,6 +7,8 @@ import com.javarush.myactivities.repositories.interfaces.ProjectRepository;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -28,23 +30,21 @@ public class ActivityRepositoryTest extends BasicRepositoryTest {
     @Test
     @Override
     public void createTest() {
-        assertEquals(0, activityRepository.getAll().size());
-        Long projectId = createProject();
-        activityRepository.create(Activity.builder()
+        assertFalse(activityRepository.findAll().iterator().hasNext());
+        Project project = createProject();
+        activityRepository.save(Activity.builder()
                 .name(NAME)
                 .description(DESC)
-                .project(Project.builder().id(projectId).build())
+                .project(project)
                 .build());
-        assertEquals(1, activityRepository.getAll().size());
+        assertTrue(activityRepository.findAll().iterator().hasNext());
     }
 
     @Test
     @Override
     public void readTest() {
-        final Long key = activityRepository.create(ACTIVITY);
-        final Activity activity = activityRepository.getById(key);
+        final Activity activity = activityRepository.save(ACTIVITY);
 
-        assertEquals(key, activity.getId());
         assertEquals(NAME, activity.getName());
         assertEquals(DESC, activity.getDescription());
     }
@@ -53,21 +53,24 @@ public class ActivityRepositoryTest extends BasicRepositoryTest {
     @Override
     public void updateTest() {
         //insert
-        final Long key = activityRepository.create(ACTIVITY);
+        final Long id = activityRepository.save(ACTIVITY).getId();
 
         // update
         final String newName = "new name";
         final String newDescription = "new description";
         final Activity newActivity = Activity.builder()
-                .id(key)
+                .id(id)
                 .name(newName)
                 .description(newDescription)
                 .build();
-        activityRepository.update(newActivity);
+
+        activityRepository.save(newActivity);
 
         // read and assert update was done
-        final Activity activity = activityRepository.getById(key);
-        assertEquals(key, activity.getId());
+        final Activity activity = activityRepository.findById(id)
+                .orElse(new Activity());
+
+        assertEquals(id, activity.getId());
         assertEquals(newName, activity.getName());
         assertEquals(newDescription, activity.getDescription());
 
@@ -76,18 +79,19 @@ public class ActivityRepositoryTest extends BasicRepositoryTest {
     @Test
     @Override
     public void deleteTest() {
-        final Long key = activityRepository.create(ACTIVITY);
-        activityRepository.delete(key);
-        final Activity activity = activityRepository.getById(key);
+        final Long key = activityRepository.save(ACTIVITY).getId();
+        activityRepository.deleteById(key);
+        final Activity activity = activityRepository.findById(key)
+                .orElse(null);
         assertNull(activity);
     }
 
-    private Long createProject() {
+    private Project createProject() {
         final Project project = Project.builder()
                 .name("name")
                 .description("descr")
                 .build();
 
-        return projectRepository.create(project);
+        return projectRepository.save(project);
     }
 }
