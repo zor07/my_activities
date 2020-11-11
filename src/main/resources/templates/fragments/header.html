@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head">
+    <title>Bootstrap Example</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <div th:fragment="menu">
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#" th:href="@{/}" th:text="Главная"></a>
+                    <ul class="nav navbar-nav">
+                        <li><a href="#" th:href="@{/}" th:text="Проекты"></a></li>
+                        <li><a href="#" th:href="@{/}" th:text="Активности"></a></li>
+                        <li><a href="#" th:href="@{/}" th:text="Записи"></a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <h1>Главная страница моих активностей</h1>
+    <p>Здесь просто очень важный текст</p>
+    <p>Здесь не просто очень важный текст, а очень преочень важный текст</p>
+</div>
+
+</body>
+</html>
