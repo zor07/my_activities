@@ -16,6 +16,9 @@ public class Entry {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
 
+    @Version
+    private Integer version;
+
     private String comment;
 
     private LocalDate date;

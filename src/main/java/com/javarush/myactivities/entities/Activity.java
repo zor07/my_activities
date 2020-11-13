@@ -15,6 +15,9 @@ public class Activity {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
 
+    @Version
+    private Integer version;
+
     private String name;
 
     private String description;
