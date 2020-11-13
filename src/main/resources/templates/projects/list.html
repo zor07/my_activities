@@ -1,23 +1,33 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head lang="en">
     <title>My Activities</title>
-    <!--/*/ <th:block th:include="fragments/header :: head"></th:block> /*/-->
+    <th:block th:include="fragments/header :: head"/>
 </head>
 <body>
     <div class="container">
-        <!--/*/ <th:block th:include="fragments/header :: menu"></th:block> /*/-->
-        <div class ="jumbotron">
-            <div class="row text-center">
-                <div class="">
-                    <h1>Здесь будет список проектов</h1>
-                </div>
-            </div>
-            <div class="row text-center">
-                <p>Здесь просто очень важный текст</p>
-                <p>Здесь не просто очень важный текст, а очень преочень важный текст</p>
-            </div>
+        <th:block th:include="fragments/header :: menu"/>
+        <div th:if="${not #lists.isEmpty(projects)}">
+            <h2 th:text="Проекты "></h2>
+            <table class="table table-striped">
+                <tr>
+                    <th th:text="Название"></th>
+                    <th th:text="Описание"></th>
+                    <th th:text="Действия"></th>
+                </tr>
+                <tr th:each="project : ${projects}">
+                    <td th:text="${project.name}">Name</td>
+                    <td th:text="${project.description}">Description</td>
+                    <td>
+                        <ul class="list-inline">
+                            <li><a th:href="${'/projects/edit/'  + project.id}" th:text="Редактировать"></a></li>
+                            <li><a th:href="${'/projects/delete/'+ project.id}" th:text="Удалить"></a></li>
+                        </ul>
+                    </td>
+                </tr>
+            </table>
         </div>
+        <a th:href="${ '/projects/new'}" th:text="'Создать проект'"></a>
     </div>
 </body>
 </html>
