@@ -1,14 +1,12 @@
 package com.javarush.myactivities.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
 @Builder @AllArgsConstructor
-@Getter
+@Getter @Setter @EqualsAndHashCode
 public class Activity {
 
     @Id

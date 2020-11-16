@@ -1,23 +1,23 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head lang="en">
-    <title>My Activities</title>
-    <th:block th:include="fragments/header :: head" />
+    <title>My Entries</title>
+    <th:block th:include="fragments/header :: head"/>
 </head>
 <body>
-    <div class="container">
-        <th:block th:include="fragments/header :: menu" />
-        <div class ="jumbotron">
-            <div class="row text-center">
-                <div class="">
-                    <h1>Здесь будет список записей</h1>
-                </div>
-            </div>
-            <div class="row text-center">
-                <p>Здесь просто очень важный текст</p>
-                <p>Здесь не просто очень важный текст, а очень преочень важный текст</p>
-            </div>
-        </div>
+<div class="container">
+    <th:block th:include="fragments/header :: menu"/>
+    <h2>Журнал активностей</h2>
+
+    <table class="table table-striped">
+        <tr th:each="mapEntry, stat : ${activityEntriesMap}">
+            <th:block th:each="entry : ${mapEntry.value}">
+                <td th:text="${entry.comment} + ' - ' + ${entry.date}"/>
+            </th:block>
+        </tr>
+    </table>
+
+    <a th:href="${ '/entries/new'}" th:text="'Создать запись'"></a>
     </div>
 </body>
 </html>

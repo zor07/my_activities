@@ -5,19 +5,31 @@
     <th:block th:include="fragments/header :: head" />
 </head>
 <body>
-    <div class="container">
-        <th:block th:include="fragments/header :: menu" />
-        <div class ="jumbotron">
-            <div class="row text-center">
-                <div class="">
-                    <h1>Здест будет список активностей</h1>
-                </div>
-            </div>
-            <div class="row text-center">
-                <p>Здесь просто очень важный текст</p>
-                <p>Здесь не просто очень важный текст, а очень преочень важный текст</p>
-            </div>
-        </div>
+<div class="container">
+    <th:block th:include="fragments/header :: menu"/>
+    <div th:if="${not #lists.isEmpty(activities)}">
+        <h2 th:text="Проекты "></h2>
+        <table class="table table-striped">
+            <tr>
+                <th th:text="Название"></th>
+                <th th:text="Описание"></th>
+                <th th:text="Проект"></th>
+                <th th:text="Действия"></th>
+            </tr>
+            <tr th:each="activity : ${activities}">
+                <td th:text="${activity.name}">Имя</td>
+                <td th:text="${activity.description}">Описание</td>
+                <td th:text="${activity.project.name}">Проект</td>
+                <td>
+                    <ul class="list-inline">
+                        <li><a th:href="${'/activities/edit/'  + activity.id}" th:text="Редактировать"></a></li>
+                        <li><a th:href="${'/activities/delete/'+ activity.id}" th:text="Удалить"></a></li>
+                    </ul>
+                </td>
+            </tr>
+        </table>
     </div>
+    <a th:href="${ '/activities/new'}" th:text="'Создать активность'"></a>
+</div>
 </body>
 </html>
