@@ -1,11 +1,9 @@
 package com.javarush.myactivities.services.interfaces;
 
-import com.javarush.myactivities.entities.Activity;
 import com.javarush.myactivities.entities.Entry;
 
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDate;
 
 public interface EntryService extends CrudService<Entry, Long> {
-    Map<Activity, List<Entry>> getActivityEntriesMap();
+    Iterable<Entry> getAllByDate(LocalDate date);
 }

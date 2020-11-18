@@ -9,6 +9,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/entries")
@@ -25,14 +30,25 @@ public class EntryController {
     }
 
     @RequestMapping
-    public String getEntries(Model model) {
-        model.addAttribute("activityEntriesMap", entryService.getActivityEntriesMap());
+    public String getEntries(Model model, @RequestParam(value = "date", required = false) LocalDate date) {
+
+        final LocalDate filterDate = Optional.ofNullable(date).orElse(LocalDate.now());
+        final LocalDate filterNextDate = filterDate.plusDays(1);
+        final LocalDate filterPrevDate = filterDate.minusDays(1);
+
+        model.addAttribute("filterDate", filterDate);
+        model.addAttribute("filterNextDate", filterNextDate);
+        model.addAttribute("filterPrevDate", filterPrevDate);
+        model.addAttribute("entries", entryService.getAllByDate(filterDate));
         return "entries/list";
     }
 
     @RequestMapping(value = "/new")
-    public String create(Model model){
-        model.addAttribute("entry", new Entry());
+    public String create(Model model, @RequestParam(value = "date") LocalDate date){
+        final Entry entry = new Entry();
+        entry.setDate(date);
+        model.addAttribute("date", date);
+        model.addAttribute("entry", entry);
         model.addAttribute("activities", activityService.getAll());
         return "entries/card";
     }
@@ -48,7 +64,8 @@ public class EntryController {
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     public String save(Entry entry){
         entryService.save(entry);
-        return "redirect:/entries";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yy");
+        return "redirect:/entries?date=" + entry.getDate().format(formatter);
     }
 
 }
