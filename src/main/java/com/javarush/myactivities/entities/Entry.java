@@ -10,6 +10,9 @@ import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
+@Table( uniqueConstraints= {
+        @UniqueConstraint(columnNames = {"activity_id", "date"})
+})
 @Builder @AllArgsConstructor
 @Getter @Setter
 public class Entry {
@@ -29,6 +32,10 @@ public class Entry {
     @ManyToOne
     @JoinColumn(name="activity_id", nullable=false)
     private Activity activity;
+
+    @ManyToOne
+    @JoinColumn(name="user_id")
+    private User user;
 
     public Entry() {}
 

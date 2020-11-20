@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 @Entity
 @Builder @AllArgsConstructor
-@Getter @Setter @EqualsAndHashCode
+@Getter @Setter
 public class Activity {
 
     @Id
@@ -23,6 +23,10 @@ public class Activity {
     @ManyToOne
     @JoinColumn(name="project_id")
     private Project project;
+
+    @ManyToOne
+    @JoinColumn(name="user_id")
+    private User user;
 
     public Activity() {}
 
