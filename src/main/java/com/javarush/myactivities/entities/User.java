@@ -1,18 +1,18 @@
 package com.javarush.myactivities.entities;
 
-import com.javarush.myactivities.entities.helpers.GrantedAuthorities;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 @Entity
-@Table(name="\"user\"", uniqueConstraints= {
+@Table(name="users", uniqueConstraints= {
         @UniqueConstraint(columnNames={"username"})
 })
 @Builder @AllArgsConstructor @Setter
@@ -37,7 +37,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Arrays.asList(GrantedAuthorities.values());
+        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
     }
 
 

@@ -1,11 +1,15 @@
 package com.javarush.myactivities.application;
 
-import com.javarush.myactivities.entities.helpers.GrantedAuthorities;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
@@ -13,19 +17,22 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
-    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final UserDetailsService userDetailsService;
+
+    @Autowired
+    public WebSecurityConfig(@Qualifier("UserRepositoryUserDetailsService") UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth
-            .inMemoryAuthentication()
-                .withUser("buzz")
-                    .password(passwordEncoder.encode("123456"))
-                    .authorities(GrantedAuthorities.USER.getAuthority())
-                .and()
-                .withUser("woody")
-                    .password(passwordEncoder.encode("bullseye"))
-                    .authorities(GrantedAuthorities.USER.getAuthority())
-                .and().passwordEncoder(passwordEncoder);
+            .userDetailsService(userDetailsService)
+            .passwordEncoder(passwordEncoder());
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return NoOpPasswordEncoder.getInstance();
     }
 }
