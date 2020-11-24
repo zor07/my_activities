@@ -22,6 +22,7 @@
                         <li sec:authorize="isAuthenticated()"><a th:href="@{/projects/}"   th:text="Проекты"></a></li>
                         <li sec:authorize="isAuthenticated()"><a th:href="@{/activities/}" th:text="Активности"></a></li>
                         <li sec:authorize="isAuthenticated()"><a th:href="@{/entries/}"    th:text="Записи"></a></li>
+                        <li sec:authorize="isAuthenticated()"><a th:href="@{/logout}"    th:text="Выход"></a></li>
                         <li sec:authorize="isAnonymous()" ><a th:href="@{/login/}" th:text="Логин"></a></li>
                         <li sec:authorize="isAnonymous()" ><a th:href="@{/register/}" th:text="Зарегистрироваться"></a></li>
                     </ul>

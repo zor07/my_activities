@@ -9,11 +9,11 @@
 
 <div class="container">
     <th:block th:include="fragments/header :: menu" />
-    <h2 th:text="Авторизация"></h2>
+    <h2 th:text="'Вход в систему'"></h2>
     <div>
         <form class="form-horizontal"  th:action="@{/login}" id="loginForm" method="post">
             <div class="form-group">
-                <label class="col-sm-2 control-label" th:text="Вход в систему"></label>
+                <label class="col-sm-2 control-label" th:text="Логин"></label>
                 <div class="col-sm-10">
                     <input type="text" class="form-control" name="username" id="username" th:required="required"/>
                 </div>
