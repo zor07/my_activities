@@ -1,5 +1,6 @@
 package com.javarush.myactivities.entities;
 
+import com.javarush.myactivities.entities.helpers.GrantedAuthorities;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Setter;
@@ -37,7 +38,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+        return Collections.singletonList(new SimpleGrantedAuthority(GrantedAuthorities.USER.getAuthority()));
     }
 
 

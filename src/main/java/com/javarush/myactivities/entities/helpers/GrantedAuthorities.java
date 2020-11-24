@@ -4,7 +4,7 @@ import org.springframework.security.core.GrantedAuthority;
 
 public enum GrantedAuthorities implements GrantedAuthority {
 
-    USER("user");
+    USER("USER");
 
     private final String authority;
 

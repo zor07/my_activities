@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:fragment="head">
     <title>Bootstrap Example</title>
     <meta charset="utf-8">
@@ -17,9 +19,11 @@
                 <div class="navbar-header">
                     <a class="navbar-brand" href="#" th:href="@{/}" th:text="Главная"></a>
                     <ul class="nav navbar-nav">
-                        <li><a href="#" th:href="@{/projects/}" th:text="Проекты"></a></li>
-                        <li><a href="#" th:href="@{/activities/}" th:text="Активности"></a></li>
-                        <li><a href="#" th:href="@{/entries/}" th:text="Записи"></a></li>
+                        <li sec:authorize="isAuthenticated()"><a th:href="@{/projects/}"   th:text="Проекты"></a></li>
+                        <li sec:authorize="isAuthenticated()"><a th:href="@{/activities/}" th:text="Активности"></a></li>
+                        <li sec:authorize="isAuthenticated()"><a th:href="@{/entries/}"    th:text="Записи"></a></li>
+                        <li sec:authorize="isAnonymous()" ><a th:href="@{/login/}" th:text="Логин"></a></li>
+                        <li sec:authorize="isAnonymous()" ><a th:href="@{/register/}" th:text="Зарегистрироваться"></a></li>
                     </ul>
                 </div>
             </div>
