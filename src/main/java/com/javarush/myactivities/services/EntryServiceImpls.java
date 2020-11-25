@@ -1,15 +1,14 @@
 package com.javarush.myactivities.services;
 
 import com.javarush.myactivities.entities.Entry;
+import com.javarush.myactivities.entities.User;
 import com.javarush.myactivities.repositories.interfaces.EntryRepository;
 import com.javarush.myactivities.services.interfaces.EntryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Service
 public class EntryServiceImpls implements EntryService {
@@ -20,11 +19,6 @@ public class EntryServiceImpls implements EntryService {
     public EntryServiceImpls(EntryRepository entryRepository) {
         this.entryRepository = entryRepository;
     }
-
-    @Override
-    public List<Entry> getAll() {
-        return StreamSupport.stream(entryRepository.findAll().spliterator(), false)
-                .collect(Collectors.toList());    }
 
     @Override
     public Entry getById(Long id) {
@@ -42,7 +36,12 @@ public class EntryServiceImpls implements EntryService {
     }
 
     @Override
-    public Iterable<Entry> getAllByDate(LocalDate date) {
-        return entryRepository.findByDate(date);
+    public Iterable<Entry> getAllByUserAndDate(User user, LocalDate date) {
+        return entryRepository.findAllByUserAndDate(user, date);
+    }
+
+    @Override
+    public Iterable<Entry> getAllByUser(User user) {
+        throw new NotImplementedException();
     }
 }

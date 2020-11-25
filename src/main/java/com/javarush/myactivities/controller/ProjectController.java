@@ -1,8 +1,10 @@
 package com.javarush.myactivities.controller;
 
 import com.javarush.myactivities.entities.Project;
+import com.javarush.myactivities.entities.User;
 import com.javarush.myactivities.services.interfaces.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,8 +23,9 @@ public class ProjectController {
     }
 
     @RequestMapping
-    public String getProjects(Model model) {
-        model.addAttribute("projects", projectService.getAll());
+    public String getProjects(Model model,
+                              @AuthenticationPrincipal User user) {
+        model.addAttribute("projects", projectService.getAllByUser(user));
         return "projects/list";
     }
 
@@ -40,7 +43,9 @@ public class ProjectController {
     }
 
     @RequestMapping(value = "/save", method = RequestMethod.POST)
-    public String save(Project project){
+    public String save(Project project,
+                       @AuthenticationPrincipal User user){
+        project.setUser(user);
         projectService.save(project);
         return "redirect:/projects";
     }

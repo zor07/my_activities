@@ -1,9 +1,11 @@
 package com.javarush.myactivities.controller;
 
 import com.javarush.myactivities.entities.Activity;
+import com.javarush.myactivities.entities.User;
 import com.javarush.myactivities.services.interfaces.ActivityService;
 import com.javarush.myactivities.services.interfaces.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,28 +27,34 @@ public class ActivityController {
     }
 
     @RequestMapping
-    public String getActivities(Model model) {
-        model.addAttribute("activities", activityService.getAll());
+    public String getActivities(Model model,
+                                @AuthenticationPrincipal User user) {
+        model.addAttribute("activities", activityService.getAllByUser(user));
         return "activities/list";
     }
 
     @RequestMapping(value = "/new")
-    public String create(Model model){
+    public String create(Model model,
+                         @AuthenticationPrincipal User user){
         model.addAttribute("activity", new Activity());
-        model.addAttribute("projects", projectService.getAll());
+        model.addAttribute("projects", projectService.getAllByUser(user));
         return "activities/card";
     }
 
     @RequestMapping("/edit/{id}")
-    public String edit(Model model, @PathVariable Long id) {
+    public String edit(Model model,
+                       @PathVariable Long id,
+                       @AuthenticationPrincipal User user) {
         final Activity activity = activityService.getById(id);
         model.addAttribute("activity", activity);
-        model.addAttribute("projects", projectService.getAll());
+        model.addAttribute("projects", projectService.getAllByUser(user));
         return "activities/card";
     }
 
     @RequestMapping(value = "/save", method = RequestMethod.POST)
-    public String save(Activity activity){
+    public String save(Activity activity,
+                       @AuthenticationPrincipal User user){
+        activity.setUser(user);
         activityService.save(activity);
         return "redirect:/activities";
     }

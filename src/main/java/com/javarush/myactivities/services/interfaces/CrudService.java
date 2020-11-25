@@ -1,10 +1,10 @@
 package com.javarush.myactivities.services.interfaces;
 
-import java.util.List;
+import com.javarush.myactivities.entities.User;
 
 public interface CrudService<Entity, ID> {
 
-    List<Entity> getAll();
+    Iterable<Entity> getAllByUser(User user);
     Entity getById(ID id);
     void delete(ID id);
     void save(Entity e);

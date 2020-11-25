@@ -1,9 +1,11 @@
 package com.javarush.myactivities.controller;
 
 import com.javarush.myactivities.entities.Entry;
+import com.javarush.myactivities.entities.User;
 import com.javarush.myactivities.services.interfaces.ActivityService;
 import com.javarush.myactivities.services.interfaces.EntryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,7 +32,9 @@ public class EntryController {
     }
 
     @RequestMapping
-    public String getEntries(Model model, @RequestParam(value = "date", required = false) LocalDate date) {
+    public String getEntries(Model model,
+                             @RequestParam(value = "date", required = false) LocalDate date,
+                             @AuthenticationPrincipal User user) {
 
         final LocalDate filterDate = Optional.ofNullable(date).orElse(LocalDate.now());
         final LocalDate filterNextDate = filterDate.plusDays(1);
@@ -39,30 +43,36 @@ public class EntryController {
         model.addAttribute("filterDate", filterDate);
         model.addAttribute("filterNextDate", filterNextDate);
         model.addAttribute("filterPrevDate", filterPrevDate);
-        model.addAttribute("entries", entryService.getAllByDate(filterDate));
+        model.addAttribute("entries", entryService.getAllByUserAndDate(user, filterDate));
         return "entries/list";
     }
 
     @RequestMapping(value = "/new")
-    public String create(Model model, @RequestParam(value = "date") LocalDate date){
+    public String create(Model model,
+                         @RequestParam(value = "date") LocalDate date,
+                         @AuthenticationPrincipal User user){
         final Entry entry = new Entry();
         entry.setDate(date);
         model.addAttribute("date", date);
         model.addAttribute("entry", entry);
-        model.addAttribute("activities", activityService.getAll());
+        model.addAttribute("activities", activityService.getAllByUser(user));
         return "entries/card";
     }
 
     @RequestMapping("/edit/{id}")
-    public String edit(Model model, @PathVariable Long id) {
+    public String edit(Model model,
+                       @PathVariable Long id,
+                       @AuthenticationPrincipal User user) {
         final Entry entry = entryService.getById(id);
         model.addAttribute("entry", entry);
-        model.addAttribute("activities", activityService.getAll());
+        model.addAttribute("activities", activityService.getAllByUser(user));
         return "entries/card";
     }
 
     @RequestMapping(value = "/save", method = RequestMethod.POST)
-    public String save(Entry entry){
+    public String save(Entry entry,
+                       @AuthenticationPrincipal User user){
+        entry.setUser(user);
         entryService.save(entry);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yy");
         return "redirect:/entries?date=" + entry.getDate().format(formatter);

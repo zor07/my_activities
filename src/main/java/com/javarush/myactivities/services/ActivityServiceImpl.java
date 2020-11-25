@@ -1,14 +1,11 @@
 package com.javarush.myactivities.services;
 
 import com.javarush.myactivities.entities.Activity;
+import com.javarush.myactivities.entities.User;
 import com.javarush.myactivities.repositories.interfaces.ActivityRepository;
 import com.javarush.myactivities.services.interfaces.ActivityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Service
 public class ActivityServiceImpl implements ActivityService {
@@ -21,9 +18,8 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
-    public List<Activity> getAll() {
-        return StreamSupport.stream(activityRepository.findAll().spliterator(), false)
-                .collect(Collectors.toList());
+    public Iterable<Activity> getAllByUser(User user) {
+        return activityRepository.findAllByUser(user);
     }
 
     @Override
