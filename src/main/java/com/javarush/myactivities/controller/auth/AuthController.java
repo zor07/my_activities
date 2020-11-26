@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -15,11 +16,15 @@ public class AuthController {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RegisterFormValidator registerFormValidator;
 
     @Autowired
-    public AuthController(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public AuthController(UserRepository userRepository,
+                          PasswordEncoder passwordEncoder,
+                          RegisterFormValidator registerFormValidator) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.registerFormValidator = registerFormValidator;
     }
 
     @RequestMapping("/register")
@@ -29,7 +34,13 @@ public class AuthController {
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public String register(RegisterForm registerForm) {
+    public String register(RegisterForm registerForm, Errors errors) {
+        registerFormValidator.validate(registerForm, errors);
+
+        if (errors.hasErrors()) {
+            return "auth/register";
+        }
+
         userRepository.save(registerForm.toUser(passwordEncoder));
         return "redirect:/login";
     }
